@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Công cụ tính lời BTC</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding-top: 50px;
+    }
+    .result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">Công cụ tính lời BTC</h1>
+    <form id="calcForm">
+      <div class="form-group">
+        <label for="investment">Số tiền đầu tư ($):</label>
+        <input type="number" step="any" class="form-control" id="investment" placeholder="Nhập số tiền đầu tư" required>
+      </div>
+      <div class="form-group">
+        <label for="buyPrice">Giá mua BTC ($):</label>
+        <input type="number" step="any" class="form-control" id="buyPrice" placeholder="Nhập giá mua" required>
+      </div>
+      <div class="form-group">
+        <label for="sellPrice">Giá bán BTC ($):</label>
+        <input type="number" step="any" class="form-control" id="sellPrice" placeholder="Nhập giá bán" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Tính lời</button>
+    </form>
+    <div class="result alert alert-info" style="display: none;"></div>
+  </div>
+
+  <!-- jQuery và Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#calcForm').on('submit', function(event) {
+        event.preventDefault();
+
+        // Lấy giá trị từ form
+        var investment = parseFloat($('#investment').val());
+        var buyPrice = parseFloat($('#buyPrice').val());
+        var sellPrice = parseFloat($('#sellPrice').val());
+
+        // Kiểm tra hợp lệ của dữ liệu nhập vào
+        if(isNaN(investment) || isNaN(buyPrice) || isNaN(sellPrice) || buyPrice <= 0) {
+          $('.result').removeClass('alert-info').addClass('alert-danger')
+                      .html('Vui lòng nhập giá trị hợp lệ cho các trường và giá mua phải lớn hơn 0!')
+                      .show();
+          return;
+        }
+
+        // Tính số lượng BTC mua được
+        var btcAmount = investment / buyPrice;
+        // Tính giá trị bán được khi BTC tăng giá
+        var sellValue = btcAmount * sellPrice;
+        // Tính lời lãi
+        var profit = sellValue - investment;
+
+        // Tạo thông báo kết quả
+        var resultMessage = 'Số lượng BTC mua được: ' + btcAmount.toFixed(8) + ' BTC<br>';
+        resultMessage += 'Giá trị bán được: $' + sellValue.toFixed(2) + '<br>';
+        resultMessage += 'Lời: $' + profit.toFixed(2);
+
+        $('.result').removeClass('alert-danger').addClass('alert-info').html(resultMessage).show();
+      });
+    });
+  </script>
+</body>
+</html>
